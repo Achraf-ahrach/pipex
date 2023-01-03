@@ -6,7 +6,7 @@
 /*   By: aahrach <aahrach@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/27 08:30:47 by aahrach           #+#    #+#             */
-/*   Updated: 2023/01/01 16:09:44 by aahrach          ###   ########.fr       */
+/*   Updated: 2023/01/03 08:02:41 by aahrach          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ void    ft_child1(char **av, char **env, int *pi, int i)
                 fd = open(av[1], O_RDONLY);
                 dup2(pi[1], 1);
                 dup2(fd, 0);
+                unlink(av[1]);
                 execve(comand, cm, NULL);
             }
         }
@@ -69,7 +70,6 @@ void ft_child2(char **av, char **env, int *pi, int i)
     if (i != -1)
     {
         p = ft_split(env[i]+5, ':');
-        //system("leaks pipex");
         if (p != NULL)
         {
             cm = ft_split(av[3], ' ');
@@ -102,17 +102,13 @@ int main(int ac, char **av, char **env)
     {
         if (fork() == 0)
         {
-            i = ft_strnstr(env, "PATH=");
+            i = ft_strnstr(env, "PATH=", 5);
             ft_child2(av, env, pi, i);
         }
     }
     else
     {
-        i = ft_strnstr(env, "PATH=");
+        i = ft_strnstr(env, "PATH=", 5);
         ft_child1(av, env, pi, i);
     }
-    close(pi[0]);
-    close(pi[1]);
-    wait(NULL);
-    wait(NULL);
 }

@@ -6,13 +6,13 @@
 /*   By: aahrach <aahrach@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/01 15:01:11 by aahrach           #+#    #+#             */
-/*   Updated: 2023/01/01 15:47:07 by aahrach          ###   ########.fr       */
+/*   Updated: 2023/01/02 15:54:41 by aahrach          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int ft_strnstr(char **haystack, char *needle)
+int ft_strnstr(char **haystack, char *needle, size_t len)
 {
 	size_t	i;
 	size_t	j;
@@ -25,7 +25,7 @@ int ft_strnstr(char **haystack, char *needle)
         {
             while (haystack[i][j] == needle[j])
                 j++;
-            if (j == 5)
+            if (j == len)
                 return (i);
         }
 		i++;

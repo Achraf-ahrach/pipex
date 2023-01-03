@@ -1,14 +1,15 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex_bunus.c                                      :+:      :+:    :+:   */
+/*   pipex_bonus.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aahrach <aahrach@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/01/01 16:08:53 by aahrach           #+#    #+#             */
-/*   Updated: 2023/01/02 12:05:20 by aahrach          ###   ########.fr       */
+/*   Created: 2023/01/03 08:38:29 by aahrach           #+#    #+#             */
+/*   Updated: 2023/01/03 08:40:55 by aahrach          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "pipex_bonus.h"
 
@@ -41,7 +42,7 @@ void    ft_child1(char **av, char **env, int *pi)
     char **cm;
     char *comand;
     
-    i = ft_strnstr(env, "PATH=");
+    i = ft_strnstr(env, "PATH=", 5);
     if (i != -1)
     {
         p = ft_split(env[i]+5, ':');
@@ -61,7 +62,7 @@ void    ft_child1(char **av, char **env, int *pi)
     perror("error");
 }
 
-void ft_child2(char **av, char **env, int ac)
+void ft_child2_bonus(char **av, char **env, int ac)
 {
     char **p;
     int fd;
@@ -69,7 +70,7 @@ void ft_child2(char **av, char **env, int ac)
     char **cm;
     char *comand;
     
-    i = ft_strnstr(env, "PATH=");
+    i = ft_strnstr(env, "PATH=", 5);
     if (i != -1)
     {
         p = ft_split(env[i]+5, ':');
@@ -93,10 +94,9 @@ void ft_childw(char *av, char **env, int *pi)
     char **p;
     char *comand;
     char **cm;
-    int fd;
     int i;
     
-    i = ft_strnstr(env, "PATH=");
+    i = ft_strnstr(env, "PATH=", 5);
     if (i != -1)
     {
         p = ft_split(env[i]+5, ':');
@@ -121,6 +121,10 @@ int main(int ac, char **av, char **env)
 
     i = 0;
     pipe(pi);
+    if (ft_strnstr(av, "here_doc", 9) == 1 && ac == 6)
+    {
+        
+    }
     if (i == 0 && fork() == 0)
         ft_child1(av, env, pi);
     close(pi[1]);
@@ -135,6 +139,6 @@ int main(int ac, char **av, char **env)
         dup2(pi[0], 0);
         i++;
         if (i == ac - 2 && fork() == 0)
-            ft_child2(av, env, ac);
+            ft_child2_bonus(av, env, ac);
     }
 }
