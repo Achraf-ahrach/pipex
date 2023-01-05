@@ -1,28 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   fd_open_WR.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aahrach <aahrach@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/23 09:51:40 by aahrach           #+#    #+#             */
-/*   Updated: 2023/01/04 18:24:32 by aahrach          ###   ########.fr       */
+/*   Created: 2023/01/04 15:54:10 by aahrach           #+#    #+#             */
+/*   Updated: 2023/01/04 16:23:25 by aahrach          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#include "pipex_bonus.h"
 
-# include <stdio.h>
-# include <unistd.h>
-# include <fcntl.h>
-# include <stdlib.h>
-# include <sys/wait.h>
-# include <string.h>
+int	fd_open_wr(char **av)
+{
+	char	*str;
+	char	*s;
+	int		fd;
+	int		j;
 
-void	ft_free(char **p);
-char	*ft_substr(char *s, int start, int len);
-char	*ft_strjoin(char *s1, char *s2);
-int		ft_strnstr(char **haystack, char *needle, int len);
-char	**ft_split(char *s, char c);
-#endif
+	j = 1;
+	fd = open(av[1], O_CREAT | O_RDWR | O_TRUNC, 0777);
+	while (j != 0)
+	{
+		str = get_next_line(0);
+		s = ft_join(av[2]);
+		j = ft_memcmp(str, s);
+		if (j == 1)
+			write(fd, str, ft_strlen(str));
+		free(str);
+		free(s);
+	}
+	close(fd);
+	fd = open(av[1], O_RDWR);
+	return (fd);
+}

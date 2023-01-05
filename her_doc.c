@@ -1,41 +1,57 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   her_doc.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aahrach <aahrach@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/27 08:30:47 by aahrach           #+#    #+#             */
-/*   Updated: 2023/01/04 19:06:13 by aahrach          ###   ########.fr       */
+/*   Created: 2023/01/03 18:52:41 by aahrach           #+#    #+#             */
+/*   Updated: 2023/01/04 17:49:38 by aahrach          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
-char	*ft_check(char **p, char *comand)
+int	ft_memcmp(char *s1, char *s2)
+{
+	int	i;
+	int	n;
+	int	j;
+
+	i = 0;
+	n = ft_strlen(s1);
+	j = ft_strlen(s2);
+	if (n != j)
+		return (1);
+	while (i < n)
+	{
+		if (s1[i] != s2[i])
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+char	*ft_join(char *p)
 {
 	int		i;
 	int		j;
-	char	*path;
+	char	*s;
 
 	j = 0;
-	i = -1;
-	if (access(comand, F_OK) == 0)
-		return (comand);
-	while (i != 0 && p[j] != NULL)
+	i = ft_strlen(p);
+	s = malloc(i + 2 * sizeof(char));
+	while (p[j])
 	{
-		path = ft_strjoin(p[j], comand);
-		i = access(path, F_OK);
-		if (i == -1)
-			free(path);
+		s[j] = p[j];
 		j++;
 	}
-	if (i == 0)
-		return (path);
-	return (NULL);
+	s[j++] = '\n';
+	s[j] = '\0';
+	return (s);
 }
 
-void	ft_child1(char **av, char **env, int *pi, int i)
+void	ft_child1_bon(char **av, char **env, int *pi, int i)
 {
 	char	**p;
 	int		fd;
@@ -47,11 +63,11 @@ void	ft_child1(char **av, char **env, int *pi, int i)
 		p = ft_split(env[i] + 5, ':');
 		if (p != NULL)
 		{
-			cm = ft_split(av[2], ' ');
+			fd = fd_open_wr(av);
+			cm = ft_split(av[3], ' ');
 			comand = ft_check(p, cm[0]);
 			if (comand != NULL)
 			{
-				fd = open(av[1], O_RDONLY);
 				dup2(fd, 0);
 				dup2(pi[1], 1);
 				execve(comand, cm, env);
@@ -61,10 +77,10 @@ void	ft_child1(char **av, char **env, int *pi, int i)
 		ft_free(p);
 	}
 	perror("error");
-	exit (0);
+	exit(0);
 }
 
-void	ft_child2(char **av, char **env, int *pi, int i)
+void	ft_child2_bon(char **av, char **env, int *pi, int i)
 {
 	char	**p;
 	char	*comand;
@@ -76,11 +92,11 @@ void	ft_child2(char **av, char **env, int *pi, int i)
 		p = ft_split(env[i] + 5, ':');
 		if (p != NULL)
 		{
-			cm = ft_split(av[3], ' ');
+			cm = ft_split(av[4], ' ');
 			comand = ft_check(p, cm[0]);
 			if (comand != NULL)
 			{
-				fd = open(av[4], O_CREAT | O_WRONLY | O_TRUNC, 0777);
+				fd = open(av[5], O_CREAT | O_WRONLY | O_APPEND, 0777);
 				dup2(pi[0], 0);
 				dup2(fd, 1);
 				execve(comand, cm, env);
@@ -93,31 +109,29 @@ void	ft_child2(char **av, char **env, int *pi, int i)
 	exit (0);
 }
 
-int	main(int ac, char **av, char **env)
+void	her_doc(char **av, char **env)
 {
-	int	pi[2];
 	int	i;
+	int	pi[2];
 
-	if (ac != 5)
-	{
-		write(1, "machi 5 dyal arguments !", 24);
-		exit (0);
-	}
+	i = 0;
 	pipe(pi);
 	if (fork() == 0)
 	{
 		i = ft_strnstr(env, "PATH=", 5);
-		ft_child1(av, env, pi, i);
+		ft_child1_bon(av, env, pi, i);
 	}
 	else
 	{
 		wait(NULL);
 		close(pi[1]);
+		unlink(av[1]);
 		if (fork() == 0)
 		{
 			i = ft_strnstr(env, "PATH=", 5);
-			ft_child2(av, env, pi, i);
+			ft_child2_bon(av, env, pi, i);
 		}
 		wait(NULL);
+		exit(0);
 	}
 }

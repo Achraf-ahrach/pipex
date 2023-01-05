@@ -1,28 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.h                                            :+:      :+:    :+:   */
+/*   get_next_line.h                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aahrach <aahrach@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/23 09:51:40 by aahrach           #+#    #+#             */
-/*   Updated: 2023/01/04 18:24:32 by aahrach          ###   ########.fr       */
+/*   Created: 2023/01/04 18:06:57 by aahrach           #+#    #+#             */
+/*   Updated: 2023/01/04 18:24:40 by aahrach          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PIPEX_H
-# define PIPEX_H
+#ifndef GET_NEXT_LINE_H
+# define GET_NEXT_LINE_H
 
-# include <stdio.h>
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 42
+# endif
+
 # include <unistd.h>
-# include <fcntl.h>
 # include <stdlib.h>
-# include <sys/wait.h>
-# include <string.h>
 
-void	ft_free(char **p);
-char	*ft_substr(char *s, int start, int len);
-char	*ft_strjoin(char *s1, char *s2);
-int		ft_strnstr(char **haystack, char *needle, int len);
-char	**ft_split(char *s, char c);
+char	*ft_free_get(char *buf, char **p);
+char	*get_next_line(int fd);
+char	*ft_strjoin_get(char *s1, char *s2);
+char	*ft_strdup_get(char *s1);
+int		check_line_get(char *str);
+char	*ft_substr_get(char *str, int start, int len, int x);
+size_t	ft_strlen_get(char *s);
 #endif
